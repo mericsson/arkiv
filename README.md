@@ -7,7 +7,7 @@ WIP solution to managing Marcus' email.
 1. Create a new google app script.
 2. Copy paste the .gs file there.
 3. Run the file once and do the OAuth dance to your email.
-4. Create a new trigger that fires `cleanInbox` every minute.
+4. Create a new trigger that fires `cleanInbox` every minute or every 5 min.
 
 It is now working. First it will index all your sent email addresses. Once it has looked through 200 of your sent emails it will start cleaning your inbox every minute. If someone isn't in a sent email address it'll move it to the new `zenbox` label.
 
