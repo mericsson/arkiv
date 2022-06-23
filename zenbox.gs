@@ -1,67 +1,18 @@
-const EMAIL_REG_EXP = '[a-zA-Z\.\+]+@[a-zA-Z\.\+]+'
-
-function getEmailIterator(str) {
-  return [...str.matchAll(EMAIL_REG_EXP)]
-}
-
-function isBlessed(scriptProperties, email) {
-  return !!scriptProperties.getProperty(`bless-${email}`)
-}
-
-function bless(scriptProperties, email) {
-  console.log('bless', email)
-  scriptProperties.setProperty(`bless-${email}`, true)
-}
-
-function indexTo(start, end) {
-  console.log('indexTo', start, end)
-  const threads = GmailApp.search("in:sent", start, end)
-
-  // Get set of emails sent `to`.
-  const toSet = new Set()
-  for (const thread of threads) {
-    for (const msg of thread.getMessages()) {
-      for (const email of getEmailIterator(msg.getTo())) {
-        toSet.add(email[0])
-      }
-    }
-  }
-
-  // Persist emails. 
-  const scriptProperties = PropertiesService.getScriptProperties()
-  let count = 0
-  for (const to of toSet.values()) {
-    if (!isBlessed(scriptProperties, to)) {
-      bless(to)
-      count++
-    }
-  }
-  console.log('indexTo blessed', count)
-}
-
-function shouldKeep(scriptProperties, thread) {
-  for (const msg of thread.getMessages()) {
-    for (const email of getEmailIterator(msg.getFrom())) {
-      if (isBlessed(scriptProperties, email)) {
-        return true
-      }
-    }
-  }
-  return false
-}
+const EMAIL_REG_EXP = '[0-9a-zA-Z\.\+\=\-]+@[0-9a-zA-Z\.\+\=\-]+'
 
 function cleanInbox() {
   const scriptProperties = PropertiesService.getScriptProperties()
 
   // Index if needed.
-  // const toStart = parseInt(scriptProperties.getProperty('toStart') || '0')
-  // const toEnd = parseInt(scriptProperties.getProperty('toEnd') || '50')
-  // if (toEnd <= 500) {
-  //   indexTo(toStart, toEnd)
-  //   scriptProperties.setProperty('toStart', toEnd)
-  //   scriptProperties.setProperty('toEnd', toEnd + 50)
-  //   return
-  // }
+  const toStart = parseInt(scriptProperties.getProperty('..start..') || '0')
+  if (toStart <= 200) {
+    const indexCount = indexTo(toStart)
+    scriptProperties.setProperty('..start..', toStart + indexCount)
+    return
+  } else {
+    // Regular indexing starting at 0.
+    indexTo(0)
+  }
 
   // Organize.
   const threads = GmailApp.getInboxThreads()
@@ -71,10 +22,69 @@ function cleanInbox() {
   }
   for (const thread of threads) {
     if (!shouldKeep(scriptProperties, thread)) {
-      console.log('moving')
       thread.addLabel(label)
       thread.moveToArchive()
     }
   }
 }
+
+function getEmails(str) {
+  const emails = []
+  for (const match of str.matchAll(EMAIL_REG_EXP)) {
+    emails.push(match[0])
+  }
+  return emails
+}
+
+function isBlessed(scriptProperties, email) {
+  return !!scriptProperties.getProperty(email.toLowerCase())
+}
+
+function bless(scriptProperties, email) {
+  scriptProperties.setProperty(email.toLowerCase(), true)
+}
+
+function clearProperties() {
+  PropertiesService.getScriptProperties().deleteAllProperties();
+}
+
+function indexTo(start) {
+  console.log('indexTo', start)
+  const indexCount = 10
+  const threads = GmailApp.search("in:sent", start, indexCount)
+
+  // Get set of emails sent `to`.
+  const toSet = new Set()
+  for (const thread of threads) {
+    for (const msg of thread.getMessages()) {
+      for (const email of getEmails(msg.getTo())) {
+        toSet.add(email)
+      }
+    }
+  }
+
+  // Persist emails. 
+  const scriptProperties = PropertiesService.getScriptProperties()
+  let count = 0
+  for (const to of toSet.values()) {
+    if (!isBlessed(scriptProperties, to)) {
+      bless(scriptProperties, to)
+      count++
+    }
+  }
+  console.log('indexTo blessed', count)
+  return indexCount
+}
+
+function shouldKeep(scriptProperties, thread) {
+  for (const msg of thread.getMessages()) {
+    for (const email of getEmails(msg.getFrom())) {
+      if (isBlessed(scriptProperties, email)) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 
