@@ -16,11 +16,21 @@ function cleanInbox() {
 
   // Organize.
   const threads = GmailApp.getInboxThreads()
-  let label = GmailApp.getUserLabelByName("zenbox")
+  let label = GmailApp.getUserLabelByName("_zenbox")
   if (!label) {
-    label = GmailApp.createLabel('zenbox')
+    label = GmailApp.createLabel('_zenbox')
   }
   for (const thread of threads) {
+    if (thread.getLabels().some((l) => l.getName() === label)) {
+      // Previously zenbox'ed. If it is inbox again must be a reason.
+      // Let's index sender and then skip.
+      for (const msg of thread.getMessages()) {
+        for (const email of getEmails(msg.getFrom())) {
+          bless(scriptProperties, email)
+        }
+      } 
+      continue
+    }
     if (!shouldKeep(scriptProperties, thread)) {
       thread.addLabel(label)
       thread.moveToArchive()
@@ -86,5 +96,4 @@ function shouldKeep(scriptProperties, thread) {
   }
   return false
 }
-
 
