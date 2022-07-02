@@ -1,6 +1,7 @@
 const EMAIL_REG_EXP = /[0-9a-zA-Z.+=-]+@[0-9a-zA-Z.+=-]+/
 
-function cleanInbox(): void { // eslint-disable-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function cleanInbox(): void {
   const scriptProperties = PropertiesService.getScriptProperties()
 
   // Index if needed.
@@ -16,7 +17,7 @@ function cleanInbox(): void { // eslint-disable-line @typescript-eslint/no-unuse
 
   // Organize.
   const threads = GmailApp.getInboxThreads()
-  let label = GmailApp.getUserLabelByName("_zenbox")
+  let label = GmailApp.getUserLabelByName('_zenbox')
   if (!label) {
     label = GmailApp.createLabel('_zenbox')
   }
@@ -46,22 +47,29 @@ function getEmails(str: string): string[] {
   return emails
 }
 
-function isBlessed(scriptProperties: GoogleAppsScript.Properties.Properties, email: string): boolean {
+function isBlessed(
+  scriptProperties: GoogleAppsScript.Properties.Properties,
+  email: string
+): boolean {
   return !!scriptProperties.getProperty(email.toLowerCase())
 }
 
-function bless(scriptProperties: GoogleAppsScript.Properties.Properties, email: string): void {
+function bless(
+  scriptProperties: GoogleAppsScript.Properties.Properties,
+  email: string
+): void {
   scriptProperties.setProperty(email.toLowerCase(), '1')
 }
 
-function clearProperties(): void { // eslint-disable-line @typescript-eslint/no-unused-vars
-  PropertiesService.getScriptProperties().deleteAllProperties();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function clearProperties(): void {
+  PropertiesService.getScriptProperties().deleteAllProperties()
 }
 
 function indexTo(start: number): number {
   console.log('indexTo', start)
   const indexCount = 10
-  const threads = GmailApp.search("in:sent", start, indexCount)
+  const threads = GmailApp.search('in:sent', start, indexCount)
 
   // Get set of emails sent `to`.
   const toSet = new Set<string>()
@@ -73,7 +81,7 @@ function indexTo(start: number): number {
     }
   }
 
-  // Persist emails. 
+  // Persist emails.
   const scriptProperties = PropertiesService.getScriptProperties()
   let count = 0
   for (const to of toSet.values()) {
@@ -86,7 +94,10 @@ function indexTo(start: number): number {
   return indexCount
 }
 
-function shouldKeep(scriptProperties: GoogleAppsScript.Properties.Properties, thread: GoogleAppsScript.Gmail.GmailThread): boolean {
+function shouldKeep(
+  scriptProperties: GoogleAppsScript.Properties.Properties,
+  thread: GoogleAppsScript.Gmail.GmailThread
+): boolean {
   for (const msg of thread.getMessages()) {
     for (const email of getEmails(msg.getFrom())) {
       if (isBlessed(scriptProperties, email)) {
@@ -96,4 +107,3 @@ function shouldKeep(scriptProperties: GoogleAppsScript.Properties.Properties, th
   }
   return false
 }
-
