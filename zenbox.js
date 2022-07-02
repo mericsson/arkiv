@@ -21,17 +21,17 @@ function cleanInbox() {
     label = GmailApp.createLabel('_zenbox')
   }
   for (const thread of threads) {
-    if (thread.getLabels().some((l) => l.getName() === label)) {
+    if (thread.getLabels().some((l) => l.getName() === label.getName())) {
       // Previously zenbox'ed. If it is inbox again must be a reason.
       // Let's index sender and then skip.
       for (const msg of thread.getMessages()) {
         for (const email of getEmails(msg.getFrom())) {
           bless(scriptProperties, email)
         }
-      } 
+      }
+      thread.removeLabel(label)
       continue
-    }
-    if (!shouldKeep(scriptProperties, thread)) {
+    } else if (!shouldKeep(scriptProperties, thread)) {
       thread.addLabel(label)
       thread.moveToArchive()
     }
