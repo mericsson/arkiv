@@ -40,12 +40,7 @@ function cleanInbox(): void {
 }
 
 function getEmails(str: string): string[] {
-  const emails: string[] = []
-  const matches = str.match(EMAIL_REG_EXP) || []
-  for (const match of matches) {
-    emails.push(match)
-  }
-  return emails
+  return str.match(EMAIL_REG_EXP) || []
 }
 
 function isBlessed(
