@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-useless-escape
-const EMAIL_REG_EXP = '[0-9a-zA-Z\.\+\=\-]+@[0-9a-zA-Z\.\+\=\-]+'
+const EMAIL_REG_EXP = /[0-9a-zA-Z\.\+\=\-]+@[0-9a-zA-Z\.\+\=\-]+/g
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function cleanInbox(): void {
@@ -41,8 +41,9 @@ function cleanInbox(): void {
 
 function getEmails(str: string): string[] {
   const emails: string[] = []
-  for (const match of str.matchAll(EMAIL_REG_EXP)) {
-    emails.push(match[0])
+  const matches = str.match(EMAIL_REG_EXP) || []
+  for (const match of matches) {
+    emails.push(match)
   }
   return emails
 }
