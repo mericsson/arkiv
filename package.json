@@ -4,7 +4,7 @@
   "description": "Google Apps Script for organizing GMail Inbox.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,11 @@
   "homepage": "https://github.com/mericsson/zenbox#readme",
   "dependencies": {
     "@types/google-apps-script": "^1.0.49"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.30.3",
+    "@typescript-eslint/parser": "^5.30.3",
+    "eslint": "^8.19.0",
+    "typescript": "^4.7.4"
   }
 }

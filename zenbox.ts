@@ -7,7 +7,7 @@ function cleanInbox() {
   const toStart = parseInt(scriptProperties.getProperty('..start..') || '0')
   if (toStart <= 200) {
     const indexCount = indexTo(toStart)
-    scriptProperties.setProperty('..start..', toStart + indexCount)
+    scriptProperties.setProperty('..start..', `${toStart + indexCount}`)
     return
   } else {
     // Regular indexing starting at 0.
@@ -39,7 +39,7 @@ function cleanInbox() {
 }
 
 function getEmails(str) {
-  const emails = []
+  const emails: any[] = []
   for (const match of str.matchAll(EMAIL_REG_EXP)) {
     emails.push(match[0])
   }
