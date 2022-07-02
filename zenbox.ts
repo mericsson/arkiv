@@ -1,4 +1,5 @@
-const EMAIL_REG_EXP = /[0-9a-zA-Z.+=-]+@[0-9a-zA-Z.+=-]+/
+// eslint-disable-next-line no-useless-escape
+const EMAIL_REG_EXP = '[0-9a-zA-Z\.\+\=\-]+@[0-9a-zA-Z\.\+\=\-]+'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function cleanInbox(): void {
@@ -31,7 +32,6 @@ function cleanInbox(): void {
         }
       }
       thread.removeLabel(label)
-      continue
     } else if (!shouldKeep(scriptProperties, thread)) {
       thread.addLabel(label)
       thread.moveToArchive()
