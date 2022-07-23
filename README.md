@@ -14,5 +14,6 @@ It is now working. First it will index all your sent email addresses. Once it ha
 ## Future Enhancements
 
 - [x] zenbox should know if you moved something from `zenbox` label to Inbox and update allowlist appropriately.
+- [x] support 'blessing' random email addresses to the allowlist. (via label or UI)
 - [ ] support distribution lists so ultimate frisbee d-list stays in inbox.
-- [ ] support 'blessing' random email addresses to the allowlist. (via label or UI)
+
