@@ -65,7 +65,6 @@ function clearProperties(): void {
 }
 
 function indexTo(start: number): number {
-  console.log('indexTo', start)
   const indexCount = 10
   const threads = GmailApp.search('in:sent', start, indexCount)
 
@@ -88,7 +87,6 @@ function indexTo(start: number): number {
       count++
     }
   }
-  console.log('indexTo blessed', count)
   return indexCount
 }
 
