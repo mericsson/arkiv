@@ -16,24 +16,25 @@ function cleanInbox(): void {
     indexTo(0)
   }
 
+  let zenboxLabel = GmailApp.getUserLabelByName('_zenbox')
+  if (!zenboxLabel) {
+    zenboxLabel = GmailApp.createLabel('_zenbox')
+  }
+
   // First look at blessed emails.
-  processBlessed(scriptProperties)
+  processBlessed(scriptProperties, zenboxLabel)
 
   // Then organize inbox.
   const threads = GmailApp.getInboxThreads()
-  let label = GmailApp.getUserLabelByName('_zenbox')
-  if (!label) {
-    label = GmailApp.createLabel('_zenbox')
-  }
   for (const thread of threads) {
     if (!shouldKeep(scriptProperties, thread)) {
-      thread.addLabel(label)
+      thread.addLabel(zenboxLabel)
       thread.moveToArchive()
     }
   }
 }
 
-function processBlessed(scriptProperties: GoogleAppsScript.Properties.Properties) {
+function processBlessed(scriptProperties: GoogleAppsScript.Properties.Properties, zenboxLabel: GoogleAppsScript.Gmail.GmailLabel) {
   const label = GmailApp.getUserLabelByName('bless')
   if (!label) {
     // Should we consider creating it?
@@ -46,6 +47,7 @@ function processBlessed(scriptProperties: GoogleAppsScript.Properties.Properties
       }
     }
     thread.moveToInbox()
+    thread.removeLabel(zenboxLabel)
     thread.removeLabel(label)
   }
 }
