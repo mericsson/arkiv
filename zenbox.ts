@@ -80,11 +80,9 @@ function indexTo(start: number): number {
 
   // Persist emails.
   const scriptProperties = PropertiesService.getScriptProperties()
-  let count = 0
   for (const to of toSet.values()) {
     if (!isBlessed(scriptProperties, to)) {
       bless(scriptProperties, to)
-      count++
     }
   }
   return indexCount
