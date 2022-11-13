@@ -16,26 +16,39 @@ function cleanInbox(): void {
     indexTo(0)
   }
 
-  // Organize.
-  const threads = GmailApp.getInboxThreads()
-  let label = GmailApp.getUserLabelByName('_zenbox')
-  if (!label) {
-    label = GmailApp.createLabel('_zenbox')
+  let zenboxLabel = GmailApp.getUserLabelByName('_zenbox')
+  if (!zenboxLabel) {
+    zenboxLabel = GmailApp.createLabel('_zenbox')
   }
+
+  // First look at blessed emails.
+  processBlessed(scriptProperties, zenboxLabel)
+
+  // Then organize inbox.
+  const threads = GmailApp.getInboxThreads()
   for (const thread of threads) {
-    if (thread.getLabels().some((l) => l.getName() === 'bless')) {
-      // Previously zenbox'ed. If it is inbox again must be a reason.
-      // Let's index sender and then skip.
-      for (const msg of thread.getMessages()) {
-        for (const email of getEmails(msg.getFrom())) {
-          bless(scriptProperties, email)
-        }
-      }
-      thread.removeLabel(label)
-    } else if (!shouldKeep(scriptProperties, thread)) {
-      thread.addLabel(label)
+    if (!shouldKeep(scriptProperties, thread)) {
+      thread.addLabel(zenboxLabel)
       thread.moveToArchive()
     }
+  }
+}
+
+function processBlessed(scriptProperties: GoogleAppsScript.Properties.Properties, zenboxLabel: GoogleAppsScript.Gmail.GmailLabel) {
+  const label = GmailApp.getUserLabelByName('bless')
+  if (!label) {
+    // Should we consider creating it?
+    return
+  }
+  for (const thread of label.getThreads()) {
+    for (const msg of thread.getMessages()) {
+      for (const email of getEmails(msg.getFrom())) {
+        bless(scriptProperties, email)
+      }
+    }
+    thread.moveToInbox()
+    thread.removeLabel(zenboxLabel)
+    thread.removeLabel(label)
   }
 }
 
@@ -63,7 +76,6 @@ function clearProperties(): void {
 }
 
 function indexTo(start: number): number {
-  console.log('indexTo', start)
   const indexCount = 10
   const threads = GmailApp.search('in:sent', start, indexCount)
 
@@ -79,14 +91,11 @@ function indexTo(start: number): number {
 
   // Persist emails.
   const scriptProperties = PropertiesService.getScriptProperties()
-  let count = 0
   for (const to of toSet.values()) {
     if (!isBlessed(scriptProperties, to)) {
       bless(scriptProperties, to)
-      count++
     }
   }
-  console.log('indexTo blessed', count)
   return indexCount
 }
 
