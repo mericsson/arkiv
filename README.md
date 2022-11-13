@@ -16,7 +16,7 @@ TODO document this. :)
 
 ## Future Enhancements
 
-- [x] zenbox should know if you moved something from `zenbox` label to Inbox and update allowlist appropriately.
+- [ ] zenbox should know if you moved something from `zenbox` label to Inbox and update allowlist appropriately.
 - [x] support 'blessing' random email addresses to the allowlist. (via label or UI)
 - [ ] support distribution lists so ultimate frisbee d-list stays in inbox.
 
