@@ -16,28 +16,37 @@ function cleanInbox(): void {
     indexTo(0)
   }
 
-  // Organize.
+  // First look at blessed emails.
+  processBlessed(scriptProperties)
+
+  // Then organize inbox.
   const threads = GmailApp.getInboxThreads()
   let label = GmailApp.getUserLabelByName('_zenbox')
   if (!label) {
     label = GmailApp.createLabel('_zenbox')
   }
   for (const thread of threads) {
-    const blessLabel = thread.getLabels().find((l) => l.getName() === 'bless')
-    if (blessLabel) {
-      // Previously zenbox'ed. If it is inbox again must be a reason.
-      // Let's index sender and then skip.
-      for (const msg of thread.getMessages()) {
-        for (const email of getEmails(msg.getFrom())) {
-          bless(scriptProperties, email)
-        }
-      }
-      thread.removeLabel(label)
-      thread.removeLabel(blessLabel) // to indicate that it has been processed.
-    } else if (!shouldKeep(scriptProperties, thread)) {
+    if (!shouldKeep(scriptProperties, thread)) {
       thread.addLabel(label)
       thread.moveToArchive()
     }
+  }
+}
+
+function processBlessed(scriptProperties: GoogleAppsScript.Properties.Properties) {
+  const label = GmailApp.getUserLabelByName('bless')
+  if (!label) {
+    // Should we consider creating it?
+    return
+  }
+  for (const thread of label.getThreads()) {
+    for (const msg of thread.getMessages()) {
+      for (const email of getEmails(msg.getFrom())) {
+        bless(scriptProperties, email)
+      }
+    }
+    thread.moveToInbox()
+    thread.removeLabel(label)
   }
 }
 
