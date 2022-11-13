@@ -12,6 +12,9 @@ It is now working. First it will index all your sent email addresses. Once it ha
 
 ### Via CLI
 
+1. Install [clasp](https://developers.google.com/apps-script/guides/clasp)
+1. `clasp push` maybe?
+
 TODO document this. :)
 
 ## Future Enhancements
