@@ -107,11 +107,11 @@ function indexTo(
   }
 
   // Persist emails.
-  for (const to of toSet.values()) {
+  toSet.forEach((to) => {
     if (!isAllowlisted(props, to)) {
       allowlist(props, to)
     }
-  }
+  })
   return indexCount
 }
 
@@ -137,4 +137,9 @@ function viewProperties(): void {
   for (const key of keys) {
     console.log(key, props.getProperty(key))
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function deleteProperties(): void {
+  PropertiesService.getUserProperties().deleteAllProperties()
 }
