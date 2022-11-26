@@ -2,20 +2,26 @@
 
 Google Apps Script native tool to reduce emails in the inbox.
 
+arkiv works by maintaining an allow-list of email addresses. This is initially populated after initial installation by looking through your most recent 200 sent emails. Additionally, arkiv will always look for emails with the `arkiv-allow` label -- appending the senders to the allowlist.
+
 ## Installation
 
-### Via script
+arkiv can be installed by copy pasting the transpiled javascript code from sharable link below or by installing it from source.
 
-Go to https://script.google.com/d/1bpaSFnMp-143MelK8IHfHmHKg3-B6uKa7r57xJLgC85OeeKAW_iX-yEB/edit?usp=sharing and click Copy to add to your appscripts. And then start running. :)
+### From Sharable Link
 
-It is now working. First it will index all your sent email addresses. Once it has looked through 200 of your sent emails it will start cleaning your inbox every minute. If someone isn't in a sent email address it'll move it to the new `arkiv` label.
+Go to https://script.google.com/d/1bpaSFnMp-143MelK8IHfHmHKg3-B6uKa7r57xJLgC85OeeKAW_iX-yEB/edit?usp=sharing and click Copy to add to your Google App Scripts.
 
-### Via CLI
+### From Source
 
 1. Install [clasp](https://developers.google.com/apps-script/guides/clasp)
-1. `clasp push` maybe?
+2. ... TODO
 
-TODO document this. :)
+#### Updating
+
+```
+clasp push
+```
 
 ## Contributing
 
