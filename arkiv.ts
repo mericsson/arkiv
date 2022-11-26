@@ -126,6 +126,10 @@ function shouldKeep(
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function clearProperties(): void {
-  PropertiesService.getScriptProperties().deleteAllProperties()
+function viewProperties(): void {
+  const props = PropertiesService.getUserProperties()
+  const keys = props.getKeys()
+  for (const key of keys) {
+    console.log(key, props.getProperty(key))
+  }
 }

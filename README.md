@@ -16,7 +16,12 @@ arkiv can be installed by copy pasting the transpiled javascript code from shara
 
 ### From Sharable Link
 
-Go to https://script.google.com/d/1bpaSFnMp-143MelK8IHfHmHKg3-B6uKa7r57xJLgC85OeeKAW_iX-yEB/edit?usp=sharing and click Copy to add to your Google App Scripts.
+_Note: Installing this way will require sharing Gmail Access with `arkiv` and going through untrusted developer prompt. Alternative is to install from source to fully own the experience._
+
+1. Go to https://script.google.com/u/2/home/projects/1bpaSFnMp-143MelK8IHfHmHKg3-B6uKa7r57xJLgC85OeeKAW_iX-yEB/triggers
+1. Click "+ Add Trigger"
+1. Update "Select type of time based trigger" to Minutes timer
+1. Every 5 minutes
 
 ### From Source
 
