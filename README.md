@@ -1,6 +1,6 @@
 # arkiv
 
-arkiv (Swedish for "archive", pronounced arkeev) is a Google Apps Script native tool to reduce emails in the inbox.
+arkiv (Swedish for archive, pronounced "arkeev") is a Google Apps Script native tool to reduce emails in the inbox.
 
 arkiv works by maintaining an allow-list of email addresses. This is initially populated after initial installation by looking through your most recent 200 sent emails. Additionally, arkiv will always look for emails with the `arkiv-allow` label -- appending the senders to the allowlist.
 
