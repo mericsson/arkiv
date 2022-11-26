@@ -15,6 +15,10 @@
   "bugs": {
     "url": "https://github.com/mericsson/arkiv/issues"
   },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
   "homepage": "https://github.com/mericsson/arkiv#readme",
   "dependencies": {
     "@types/google-apps-script": "^1.0.49"

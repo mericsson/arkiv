@@ -1,6 +1,6 @@
 const labelNames = {
   archive: '_arkiv',
-  allow: 'arkiv_allow'
+  allow: 'arkiv_allow',
 }
 
 // eslint-disable-next-line no-useless-escape
@@ -42,7 +42,10 @@ function cleanInbox(): void {
   }
 }
 
-function processAllowed(scriptProperties: GoogleAppsScript.Properties.Properties, archiveLabel: GoogleAppsScript.Gmail.GmailLabel) {
+function processAllowed(
+  scriptProperties: GoogleAppsScript.Properties.Properties,
+  archiveLabel: GoogleAppsScript.Gmail.GmailLabel
+) {
   let label = GmailApp.getUserLabelByName(labelNames.allow)
   if (!label) {
     label = GmailApp.createLabel(labelNames.allow)
