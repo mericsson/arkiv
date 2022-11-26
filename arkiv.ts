@@ -14,17 +14,19 @@ const EMAIL_REG_EXP = /[0-9a-zA-Z\.\+\=\-]+@[0-9a-zA-Z\.\+\=\-]+/g
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function cleanInbox(): void {
-  const scriptProperties = PropertiesService.getScriptProperties()
+  // User properties data is shared only to current user.
+  // https://developers.google.com/apps-script/guides/properties
+  const props = PropertiesService.getUserProperties()
 
   // Index if needed.
-  const toStart = parseInt(scriptProperties.getProperty('..start..') || '0')
+  const toStart = parseInt(props.getProperty('..start..') || '0')
   if (toStart <= 200) {
-    const indexCount = indexTo(toStart)
-    scriptProperties.setProperty('..start..', `${toStart + indexCount}`)
+    const indexCount = indexTo(props, toStart)
+    props.setProperty('..start..', `${toStart + indexCount}`)
     return
   } else {
     // Regular indexing starting at 0.
-    indexTo(0)
+    indexTo(props, 0)
   }
 
   let archiveLabel = GmailApp.getUserLabelByName(labelNames.archive)
@@ -33,12 +35,12 @@ function cleanInbox(): void {
   }
 
   // First look at allow-listed emails.
-  processAllowed(scriptProperties, archiveLabel)
+  processAllowed(props, archiveLabel)
 
   // Then organize inbox.
   const threads = GmailApp.getInboxThreads()
   for (const thread of threads) {
-    if (!shouldKeep(scriptProperties, thread)) {
+    if (!shouldKeep(props, thread)) {
       thread.addLabel(archiveLabel)
       thread.moveToArchive()
     }
@@ -46,7 +48,7 @@ function cleanInbox(): void {
 }
 
 function processAllowed(
-  scriptProperties: GoogleAppsScript.Properties.Properties,
+  props: GoogleAppsScript.Properties.Properties,
   archiveLabel: GoogleAppsScript.Gmail.GmailLabel
 ) {
   let label = GmailApp.getUserLabelByName(labelNames.allow)
@@ -56,7 +58,7 @@ function processAllowed(
   for (const thread of label.getThreads()) {
     for (const msg of thread.getMessages()) {
       for (const email of getEmails(msg.getFrom())) {
-        allowlist(scriptProperties, email)
+        allowlist(props, email)
       }
     }
     thread.moveToInbox()
@@ -70,25 +72,23 @@ function getEmails(str: string): string[] {
 }
 
 function isAllowlisted(
-  scriptProperties: GoogleAppsScript.Properties.Properties,
+  props: GoogleAppsScript.Properties.Properties,
   email: string
 ): boolean {
-  return !!scriptProperties.getProperty(email.toLowerCase())
+  return !!props.getProperty(email.toLowerCase())
 }
 
 function allowlist(
-  scriptProperties: GoogleAppsScript.Properties.Properties,
+  props: GoogleAppsScript.Properties.Properties,
   email: string
 ): void {
-  scriptProperties.setProperty(email.toLowerCase(), '1')
+  props.setProperty(email.toLowerCase(), '1')
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function clearProperties(): void {
-  PropertiesService.getScriptProperties().deleteAllProperties()
-}
-
-function indexTo(start: number): number {
+function indexTo(
+  props: GoogleAppsScript.Properties.Properties,
+  start: number
+): number {
   const indexCount = 10
   const threads = GmailApp.search('in:sent', start, indexCount)
 
@@ -103,22 +103,21 @@ function indexTo(start: number): number {
   }
 
   // Persist emails.
-  const scriptProperties = PropertiesService.getScriptProperties()
   for (const to of toSet.values()) {
-    if (!isAllowlisted(scriptProperties, to)) {
-      allowlist(scriptProperties, to)
+    if (!isAllowlisted(props, to)) {
+      allowlist(props, to)
     }
   }
   return indexCount
 }
 
 function shouldKeep(
-  scriptProperties: GoogleAppsScript.Properties.Properties,
+  props: GoogleAppsScript.Properties.Properties,
   thread: GoogleAppsScript.Gmail.GmailThread
 ): boolean {
   for (const msg of thread.getMessages()) {
     for (const email of getEmails(msg.getFrom())) {
-      if (isAllowlisted(scriptProperties, email)) {
+      if (isAllowlisted(props, email)) {
         return true
       }
     }

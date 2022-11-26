@@ -4,7 +4,8 @@
   "description": "Google Apps Script for organizing GMail Inbox.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prettier": "./prettier.sh"
   },
   "repository": {
     "type": "git",
