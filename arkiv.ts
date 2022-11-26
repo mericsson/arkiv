@@ -2,7 +2,7 @@
 // 2022-11-26
 
 const labelNames = {
-  archive: 'arkiv',
+  archive: 'arkiv-archive',
   allow: 'arkiv-allow',
 }
 
