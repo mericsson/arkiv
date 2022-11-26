@@ -1,3 +1,6 @@
+// https://github.com/mericsson/arkiv
+// 2022-11-26
+
 const labelNames = {
   archive: 'arkiv',
   allow: 'arkiv-allow',
