@@ -124,3 +124,8 @@ function shouldKeep(
   }
   return false
 }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function clearProperties(): void {
+  PropertiesService.getScriptProperties().deleteAllProperties()
+}
