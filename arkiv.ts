@@ -1,6 +1,14 @@
+const labelNames = {
+  archive: '_arkiv',
+  allow: 'arkiv_allow',
+}
+
 // eslint-disable-next-line no-useless-escape
 const EMAIL_REG_EXP = /[0-9a-zA-Z\.\+\=\-]+@[0-9a-zA-Z\.\+\=\-]+/g
 
+/**
+ * This is the main entrypoint for the Google Apps Script.
+ */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function cleanInbox(): void {
   const scriptProperties = PropertiesService.getScriptProperties()
@@ -16,38 +24,40 @@ function cleanInbox(): void {
     indexTo(0)
   }
 
-  let zenboxLabel = GmailApp.getUserLabelByName('_zenbox')
-  if (!zenboxLabel) {
-    zenboxLabel = GmailApp.createLabel('_zenbox')
+  let archiveLabel = GmailApp.getUserLabelByName(labelNames.archive)
+  if (!archiveLabel) {
+    archiveLabel = GmailApp.createLabel(labelNames.archive)
   }
 
-  // First look at blessed emails.
-  processBlessed(scriptProperties, zenboxLabel)
+  // First look at allow-listed emails.
+  processAllowed(scriptProperties, archiveLabel)
 
   // Then organize inbox.
   const threads = GmailApp.getInboxThreads()
   for (const thread of threads) {
     if (!shouldKeep(scriptProperties, thread)) {
-      thread.addLabel(zenboxLabel)
+      thread.addLabel(archiveLabel)
       thread.moveToArchive()
     }
   }
 }
 
-function processBlessed(scriptProperties: GoogleAppsScript.Properties.Properties, zenboxLabel: GoogleAppsScript.Gmail.GmailLabel) {
-  const label = GmailApp.getUserLabelByName('bless')
+function processAllowed(
+  scriptProperties: GoogleAppsScript.Properties.Properties,
+  archiveLabel: GoogleAppsScript.Gmail.GmailLabel
+) {
+  let label = GmailApp.getUserLabelByName(labelNames.allow)
   if (!label) {
-    // Should we consider creating it?
-    return
+    label = GmailApp.createLabel(labelNames.allow)
   }
   for (const thread of label.getThreads()) {
     for (const msg of thread.getMessages()) {
       for (const email of getEmails(msg.getFrom())) {
-        bless(scriptProperties, email)
+        allowlist(scriptProperties, email)
       }
     }
     thread.moveToInbox()
-    thread.removeLabel(zenboxLabel)
+    thread.removeLabel(archiveLabel)
     thread.removeLabel(label)
   }
 }
@@ -56,14 +66,14 @@ function getEmails(str: string): string[] {
   return str.match(EMAIL_REG_EXP) || []
 }
 
-function isBlessed(
+function isAllowlisted(
   scriptProperties: GoogleAppsScript.Properties.Properties,
   email: string
 ): boolean {
   return !!scriptProperties.getProperty(email.toLowerCase())
 }
 
-function bless(
+function allowlist(
   scriptProperties: GoogleAppsScript.Properties.Properties,
   email: string
 ): void {
@@ -92,8 +102,8 @@ function indexTo(start: number): number {
   // Persist emails.
   const scriptProperties = PropertiesService.getScriptProperties()
   for (const to of toSet.values()) {
-    if (!isBlessed(scriptProperties, to)) {
-      bless(scriptProperties, to)
+    if (!isAllowlisted(scriptProperties, to)) {
+      allowlist(scriptProperties, to)
     }
   }
   return indexCount
@@ -105,7 +115,7 @@ function shouldKeep(
 ): boolean {
   for (const msg of thread.getMessages()) {
     for (const email of getEmails(msg.getFrom())) {
-      if (isBlessed(scriptProperties, email)) {
+      if (isAllowlisted(scriptProperties, email)) {
         return true
       }
     }
