@@ -1,5 +1,5 @@
 {
-  "name": "zenbox",
+  "name": "arkiv",
   "version": "1.0.0",
   "description": "Google Apps Script for organizing GMail Inbox.",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/mericsson/zenbox.git"
+    "url": "git+ssh://git@github.com/mericsson/arkiv.git"
   },
   "author": "mericsson.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mericsson/zenbox/issues"
+    "url": "https://github.com/mericsson/arkiv/issues"
   },
-  "homepage": "https://github.com/mericsson/zenbox#readme",
+  "homepage": "https://github.com/mericsson/arkiv#readme",
   "dependencies": {
     "@types/google-apps-script": "^1.0.49"
   },
