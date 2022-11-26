@@ -22,10 +22,9 @@ Go to https://script.google.com/d/1bpaSFnMp-143MelK8IHfHmHKg3-B6uKa7r57xJLgC85Oe
 
 arkiv can be pushed directly from the typescript source using [clasp](https://developers.google.com/apps-script/guides/clasp) tool.
 
-```
-npm install
-npm run lint
-clasp push
+```shell
+$ npm install
+$ clasp push
 ```
 
 ## Contributing
