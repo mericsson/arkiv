@@ -23,6 +23,8 @@ _Note: Installing this way will require sharing Gmail Access with `arkiv` and go
 1. Update "Select type of time based trigger" to Minutes timer
 1. Every 5 minutes
 
+arkiv is designed to only run every five minutes. For this reason it may take some time to do initial clean up of an inbox. Recommend declaring Inbox Bankruptcy and moving everything out of the inbox for faster results. :)
+
 ### From Source
 
 arkiv can be pushed directly from the typescript source using [clasp](https://developers.google.com/apps-script/guides/clasp) tool.
