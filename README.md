@@ -16,3 +16,7 @@ It is now working. First it will index all your sent email addresses. Once it ha
 1. `clasp push` maybe?
 
 TODO document this. :)
+
+## Contributing
+
+This repository uses [prettier](https://prettier.io/). Install and run prettier with `npx prettier --write .` before committing.
