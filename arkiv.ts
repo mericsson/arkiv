@@ -34,11 +34,15 @@ function cleanInbox(): void {
     archiveLabel = GmailApp.createLabel(labelNames.archive)
   }
 
-  // First look at allow-listed emails.
+  // First look at any explict allow-listed emails.
   processAllowed(props, archiveLabel)
 
   // Then organize inbox.
-  const threads = GmailApp.getInboxThreads()
+  // Assumption is inbox has less than 100 threads. Since this is meant
+  // to run every 5 minutes we need to chunk the work to "roughly 5 min"
+  // without doing time checking. This means that if it is the first
+  // time running it could take a while to organize the inbox.
+  const threads = GmailApp.getInboxThreads(0, 100)
   for (const thread of threads) {
     if (!shouldKeep(props, thread)) {
       thread.addLabel(archiveLabel)
@@ -129,6 +133,7 @@ function shouldKeep(
 function viewProperties(): void {
   const props = PropertiesService.getUserProperties()
   const keys = props.getKeys()
+  console.log('keys.length', keys.length)
   for (const key of keys) {
     console.log(key, props.getProperty(key))
   }
