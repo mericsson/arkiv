@@ -1,6 +1,6 @@
 const labelNames = {
   archive: 'arkiv',
-  allow: 'arkiv_allow',
+  allow: 'arkiv-allow',
 }
 
 // eslint-disable-next-line no-useless-escape
