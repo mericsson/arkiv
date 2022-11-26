@@ -1,5 +1,5 @@
 const labelNames = {
-  archive: '_arkiv',
+  archive: 'arkiv',
   allow: 'arkiv_allow',
 }
 
