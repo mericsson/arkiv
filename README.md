@@ -25,6 +25,8 @@ _Note: Installing this way will require sharing Gmail Access with `arkiv` and go
 
 arkiv is designed to only run every five minutes. For this reason it may take some time to do initial clean up of an inbox. Recommend declaring Inbox Bankruptcy and moving everything out of the inbox for faster results. :)
 
+Also note that since it will populate the allowlist initially (every 5 min, chunks of 10 until 200) it will take 1 hr, 40 min before any organization happens.
+
 ### From Source
 
 arkiv can be pushed directly from the typescript source using [clasp](https://developers.google.com/apps-script/guides/clasp) tool.
