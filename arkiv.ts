@@ -2,8 +2,8 @@
 // 2022-11-26
 
 const labelNames = {
-  archive: 'arkiv-box',
-  allow: 'arkiv-allow',
+  archive: 'arkiv.',
+  allow: 'arkiv.allow',
 }
 
 // eslint-disable-next-line no-useless-escape
@@ -24,9 +24,6 @@ function cleanInbox(): void {
     const indexCount = indexTo(props, toStart)
     props.setProperty('..start..', `${toStart + indexCount}`)
     return
-  } else {
-    // Regular indexing starting at 0.
-    indexTo(props, 0)
   }
 
   let archiveLabel = GmailApp.getUserLabelByName(labelNames.archive)
