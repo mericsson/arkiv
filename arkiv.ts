@@ -1,5 +1,5 @@
 // https://github.com/mericsson/arkiv
-// 2022-11-26
+// 2022-11-27
 
 const labelNames = {
   archive: 'arkiv.',
