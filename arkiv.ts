@@ -21,7 +21,7 @@ function cleanInbox(): void {
   // Index if needed.
   const toStart = parseInt(props.getProperty('..start..') || '0')
   if (toStart <= 200) {
-    const indexCount = indexTo(props, toStart)
+    const indexCount = util.indexTo(props, toStart)
     props.setProperty('..start..', `${toStart + indexCount}`)
     return
   }
@@ -32,7 +32,7 @@ function cleanInbox(): void {
   }
 
   // First look at any explict allow-listed emails.
-  processAllowed(props, archiveLabel)
+  util.processAllowed(props, archiveLabel)
 
   // Then organize inbox.
   // Assumption is inbox has less than 100 threads. Since this is meant
@@ -41,93 +41,95 @@ function cleanInbox(): void {
   // time running it could take a while to organize the inbox.
   const threads = GmailApp.getInboxThreads(0, 100)
   for (const thread of threads) {
-    if (!shouldKeep(props, thread)) {
+    if (!util.shouldKeep(props, thread)) {
       thread.addLabel(archiveLabel)
       thread.moveToArchive()
     }
   }
 }
 
-function processAllowed(
-  props: GoogleAppsScript.Properties.Properties,
-  archiveLabel: GoogleAppsScript.Gmail.GmailLabel
-) {
-  let label = GmailApp.getUserLabelByName(labelNames.allow)
-  if (!label) {
-    label = GmailApp.createLabel(labelNames.allow)
-  }
-  for (const thread of label.getThreads()) {
+const util = {
+  processAllowed: function (
+    props: GoogleAppsScript.Properties.Properties,
+    archiveLabel: GoogleAppsScript.Gmail.GmailLabel
+  ) {
+    let label = GmailApp.getUserLabelByName(labelNames.allow)
+    if (!label) {
+      label = GmailApp.createLabel(labelNames.allow)
+    }
+    for (const thread of label.getThreads()) {
+      for (const msg of thread.getMessages()) {
+        for (const email of util.getEmails(msg.getFrom())) {
+          util.allowlist(props, email)
+        }
+      }
+      thread.moveToInbox()
+      thread.removeLabel(archiveLabel)
+      thread.removeLabel(label)
+    }
+  },
+
+  getEmails: function (str: string): string[] {
+    return str.match(EMAIL_REG_EXP) || []
+  },
+
+  isAllowlisted: function (
+    props: GoogleAppsScript.Properties.Properties,
+    email: string
+  ): boolean {
+    return !!props.getProperty(email.toLowerCase())
+  },
+
+  allowlist: function (
+    props: GoogleAppsScript.Properties.Properties,
+    email: string
+  ): void {
+    props.setProperty(email.toLowerCase(), '1')
+  },
+
+  indexTo: function (
+    props: GoogleAppsScript.Properties.Properties,
+    start: number
+  ): number {
+    const indexCount = 10
+    const threads = GmailApp.search('in:sent', start, indexCount)
+
+    // Get set of emails sent `to`.
+    const toSet = new Set<string>()
+    for (const thread of threads) {
+      for (const msg of thread.getMessages()) {
+        for (const email of util.getEmails(msg.getTo())) {
+          toSet.add(email)
+        }
+      }
+    }
+
+    // Persist emails.
+    toSet.forEach((to) => {
+      if (!util.isAllowlisted(props, to)) {
+        util.allowlist(props, to)
+      }
+    })
+    return indexCount
+  },
+
+  shouldKeep: function (
+    props: GoogleAppsScript.Properties.Properties,
+    thread: GoogleAppsScript.Gmail.GmailThread
+  ): boolean {
     for (const msg of thread.getMessages()) {
-      for (const email of getEmails(msg.getFrom())) {
-        allowlist(props, email)
+      for (const email of util.getEmails(msg.getFrom())) {
+        if (util.isAllowlisted(props, email)) {
+          return true
+        }
       }
     }
-    thread.moveToInbox()
-    thread.removeLabel(archiveLabel)
-    thread.removeLabel(label)
-  }
-}
-
-function getEmails(str: string): string[] {
-  return str.match(EMAIL_REG_EXP) || []
-}
-
-function isAllowlisted(
-  props: GoogleAppsScript.Properties.Properties,
-  email: string
-): boolean {
-  return !!props.getProperty(email.toLowerCase())
-}
-
-function allowlist(
-  props: GoogleAppsScript.Properties.Properties,
-  email: string
-): void {
-  props.setProperty(email.toLowerCase(), '1')
-}
-
-function indexTo(
-  props: GoogleAppsScript.Properties.Properties,
-  start: number
-): number {
-  const indexCount = 10
-  const threads = GmailApp.search('in:sent', start, indexCount)
-
-  // Get set of emails sent `to`.
-  const toSet = new Set<string>()
-  for (const thread of threads) {
-    for (const msg of thread.getMessages()) {
-      for (const email of getEmails(msg.getTo())) {
-        toSet.add(email)
-      }
-    }
-  }
-
-  // Persist emails.
-  toSet.forEach((to) => {
-    if (!isAllowlisted(props, to)) {
-      allowlist(props, to)
-    }
-  })
-  return indexCount
-}
-
-function shouldKeep(
-  props: GoogleAppsScript.Properties.Properties,
-  thread: GoogleAppsScript.Gmail.GmailThread
-): boolean {
-  for (const msg of thread.getMessages()) {
-    for (const email of getEmails(msg.getFrom())) {
-      if (isAllowlisted(props, email)) {
-        return true
-      }
-    }
-  }
-  return false
+    return false
+  },
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function viewProperties(): void {
+function _viewProperties(): void {
   const props = PropertiesService.getUserProperties()
   const keys = props.getKeys()
   console.log('keys.length', keys.length)
@@ -137,6 +139,6 @@ function viewProperties(): void {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function deleteProperties(): void {
+function _deleteProperties(): void {
   PropertiesService.getUserProperties().deleteAllProperties()
 }
