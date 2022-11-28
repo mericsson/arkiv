@@ -25,6 +25,9 @@ function cleanInbox(): void {
     const indexCount = util.indexTo(props, toStart)
     props.setProperty('..start..', `${toStart + indexCount}`)
     return
+  } else {
+    // Index most recent sent emails.
+    util.indexTo(props, 0)
   }
 
   let archiveLabel = GmailApp.getUserLabelByName(labelNames.archive)
