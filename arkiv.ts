@@ -36,7 +36,7 @@ function cleanInbox(): void {
   util.processAllowed(props, archiveLabel)
 
   // Then look at attempts to remove from allow-list.
-  util.processRemoveAllowed(props)
+  util.processRemoveAllowed(props, archiveLabel)
 
   // Then organize inbox.
   // Assumption is inbox has less than 100 threads. Since this is meant
