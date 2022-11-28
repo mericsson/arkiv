@@ -4,6 +4,7 @@
 const labelNames = {
   archive: 'arkiv.',
   allow: 'arkiv.allow',
+  removeAllow: 'arkiv.removeAllow',
 }
 
 // eslint-disable-next-line no-useless-escape
@@ -33,6 +34,9 @@ function cleanInbox(): void {
 
   // First look at any explict allow-listed emails.
   util.processAllowed(props, archiveLabel)
+
+  // Then look at attempts to remove from allow-list.
+  util.processRemoveAllowed(props)
 
   // Then organize inbox.
   // Assumption is inbox has less than 100 threads. Since this is meant
@@ -69,6 +73,28 @@ const util = {
     }
   },
 
+  processRemoveAllowed: function (
+    props: GoogleAppsScript.Properties.Properties,
+    archiveLabel: GoogleAppsScript.Gmail.GmailLabel
+  ) {
+    let label = GmailApp.getUserLabelByName(labelNames.removeAllow)
+    if (!label) {
+      label = GmailApp.createLabel(labelNames.removeAllow)
+    }
+    for (const thread of label.getThreads()) {
+      for (const msg of thread.getMessages()) {
+        for (const email of util.getEmails(msg.getFrom())) {
+          util.removeAllow(props, email)
+        }
+      }
+      if (thread.isInInbox()) {
+        thread.moveToArchive()
+      }
+      thread.addLabel(archiveLabel)
+      thread.removeLabel(label)
+    }
+  },
+
   getEmails: function (str: string): string[] {
     return str.match(EMAIL_REG_EXP) || []
   },
@@ -85,6 +111,13 @@ const util = {
     email: string
   ): void {
     props.setProperty(email.toLowerCase(), '1')
+  },
+
+  removeAllow: function (
+    props: GoogleAppsScript.Properties.Properties,
+    email: string
+  ): void {
+    props.deleteProperty(email.toLowerCase())
   },
 
   indexTo: function (
