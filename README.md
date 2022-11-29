@@ -4,6 +4,8 @@ arkiv (Swedish for archive, pronounced "arkeev") is a Google Apps Script native 
 
 arkiv works by maintaining an allow-list of email addresses. This is initially populated after initial installation by looking through your most recent 200 sent emails. Additionally, arkiv will always look for emails with the `arkiv.allow` label -- appending the senders to the allowlist. Emails received from email addresses that are not in the allow-list of email addresses are removed from the Gmail Inbox and given the label `arkiv.`.
 
+<img width="255" alt="image" src="https://user-images.githubusercontent.com/36717/204444220-03cfc1d8-d810-4fe6-9aee-2ab6bf4bd7a0.png">
+
 arkiv runs as a Time-based Google Apps Scripts Trigger.
 
 <img width="640" alt="image" src="https://user-images.githubusercontent.com/36717/204095443-0d4ae689-eca8-48ce-bc3a-8c18fc210007.png">
