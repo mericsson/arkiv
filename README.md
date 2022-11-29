@@ -13,7 +13,7 @@ The allow list of email addresses is stored local to the Google Apps Scripts use
 ## Limitations
 
 1. This is beta software, use at your own risk. There are no support assurances.
-1. The allow list cannot be edited / viewed through a GUI. Entries can be removed from the allow list by adding the label `arkiv.removeFromAllowlist`. (The allow list will get appended to again if you send an email to a particular address).
+1. The allow list cannot be edited / viewed through a GUI. Entries can be removed from the allow list by adding the label `arkiv.removeAllow`. (The allow list will get appended to again if you send an email to a particular address).
 1. arkiv will only organize the first 100 email threads in your inbox. If you have more, you will need to clean those up yourself currently.
 
 ## Installation
