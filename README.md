@@ -2,7 +2,7 @@
 
 arkiv (Swedish for archive, pronounced "arkeev") is a Google Apps Script native tool to reduce emails in the inbox.
 
-arkiv works by maintaining an allow-list of email addresses. This is initially populated after initial installation by looking through your most recent 200 sent emails. Additionally, arkiv will always look for emails with the `arkiv.allow` label -- appending the senders to the allowlist. Emails received from email addresses that are not in the allow-list of email addresses are removed from the Gmail Inbox and given the label `arkiv.`.
+arkiv works by maintaining an allow-list of email addresses. This is initially populated after initial installation by looking through your most recent 200 sent emails. Additionally, arkiv will always look for emails with the `arkiv.allow` label -- appending the senders to the allow-list maintained in Google Apps Script. Emails received from email addresses that are not in the allow-list of email addresses are removed from the Gmail Inbox and given the label `arkiv.`. Lastly, you can use `arkiv.removeAllow` to remove an email address from the allow-list.
 
 <img width="255" alt="image" src="https://user-images.githubusercontent.com/36717/204444220-03cfc1d8-d810-4fe6-9aee-2ab6bf4bd7a0.png">
 
